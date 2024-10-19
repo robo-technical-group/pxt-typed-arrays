@@ -44,7 +44,6 @@ class ArrayBuffer {
         if (length < 0) {
             throw 'ArrayBuffer size cannot be negative.'
         }
-        game.splash(`length = ${length}`)
         this._byteLength = length
         this._bytes = []
 

@@ -41,8 +41,6 @@ class TypedArray {
     protected _byteLength: number
     protected _byteOffset: number
     protected _length: number
-    // protected _getter: (index: number) => number
-    // protected _setter: (index: number, value: number) => void
     protected _pack: (value: number) => number[]
     protected _unpack: (bytes: number[]) => number
 
