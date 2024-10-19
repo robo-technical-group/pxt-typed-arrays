@@ -36,22 +36,44 @@
 //  * Gradually migrating structure from Khronos spec to ES2015 spec
 
 class DataView {
+    protected _buffer: ArrayBuffer
+    protected _byteLength: number
+    protected _byteOffset: number
+
     public constructor(buffer: ArrayBuffer,
         byteOffset: number = 0,
-        byteLength: number = 0) {
-
+        byteLength: number = 0
+    ) {
+        byteOffset = byteOffset >>> 0
+        if (byteOffset > buffer.byteLength) {
+            throw "byteOffset is out of range."
         }
 
+        if (byteLength === undefined) {
+            byteLength = buffer.byteLength - byteOffset
+        } else {
+            byteLength = byteLength >> 0
+        }
+
+        if ((byteOffset + byteLength) > buffer.byteLength) {
+            throw "byteOffset and length reference an area beyond the end of the buffer."
+        }
+
+        this._buffer = buffer
+        this._byteLength = byteLength
+        this._byteOffset = byteOffset
+    }
+
     public get buffer(): ArrayBuffer {
-        throw "Not yet implemented."
+        return this._buffer
     }
 
     public get byteLength(): number {
-        throw "Not yet implemented."
+        return this._byteLength
     }
 
     public get byteOffset(): number {
-        throw "Not yet implemented."
+        return this._byteOffset
     }
 
     /**

@@ -35,42 +35,12 @@
 //  * Allows typed_array.get/set() as alias for subscripts (typed_array[])
 //  * Gradually migrating structure from Khronos spec to ES2015 spec
 
-class ArrayBuffer {
-    protected _byteLength: number
-    protected _bytes: number[]
-
-    public constructor(length: number = 0) {
-        length = length >> 0
-        if (length < 0) {
-            throw 'ArrayBuffer size cannot be negative.'
-        }
-        game.splash(`length = ${length}`)
-        this._byteLength = length
-        this._bytes = []
-
-        for (let i: number = 0; i < length; i++) {
-            this._bytes.push(0)
-        }
-    }
-
-    /**
-     * Public properties
-     */
-    /**
-     * The length of the ArrayBuffer (in bytes).
-     */
-    public get byteLength(): number {
-        return this._byteLength
-    }
-
-    public get bytes(): number[] {
-        return this._bytes
-    }
-
-    /**
-     * Returns a section of an ArrayBuffer.
-     */
-    public slice(begin: number, end: number = 0): ArrayBuffer {
-        throw "Not yet implemented."
+class Uint16Array extends TypedArray {
+    constructor(length: number) {
+        super(length)
+        this.BYTES_PER_ELEMENT = 2
+        this._pack = (value: number) => Convert.packU16(value)
+        this._unpack = (bytes: number[]) => Convert.unpackU16(bytes)
+        this.init()
     }
 }

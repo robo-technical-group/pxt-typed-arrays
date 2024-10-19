@@ -10,7 +10,15 @@
         "main.blocks",
         "main.ts",
         "arrayBuffer.ts",
-        "dataView.ts"
+        "dataView.ts",
+        "typedArray.ts",
+        "int8array.ts",
+        "convert.ts",
+        "unit8array.ts",
+        "int16array.ts",
+        "unit16array.ts",
+        "int32array.ts",
+        "unit32array.ts"
     ],
     "testFiles": [
         "test.ts"
