@@ -59,18 +59,68 @@ class TypedArray {
     /**
      * Additional constructors as factory methods.
      */
-    public static fromArray(source: number[]): TypedArray {
-        throw "Not yet implemented."
+    public fromArray(source: number[]): void {
+        let byteLength: number = source.length * this.BYTES_PER_ELEMENT
+        this._buffer = new ArrayBuffer(byteLength)
+        this._byteLength = byteLength
+        this._byteOffset = 0
+        this._length = source.length
+
+        for (let i: number = 0; i < this.length; i++) {
+            this.set(i, source[i])
+        }
     }
-    public static fromArrayBuffer(
+    
+    public fromArrayBuffer(
         source: ArrayBuffer,
         byteOffset: number = 0,
         length: number = undefined
-    ): TypedArray {
-        throw "Not yet implemented."
+    ): void {
+        byteOffset = byteOffset >>> 0
+        if (byteOffset > source.byteLength) {
+            throw "byteOffset out of range."
+        }
+
+        /**
+         * The given byteOffset must be multiple of the
+         * element size of the specific type.
+         */
+        if (byteOffset % this.BYTES_PER_ELEMENT != 0) {
+            throw "Buffer length minus the byteOffset is not a multiple of the element size."
+        }
+
+        let byteLength: number
+        if (length === undefined) {
+            byteLength = source.byteLength - byteOffset
+            if (byteLength % this.BYTES_PER_ELEMENT != 0) {
+                throw "Length of buffer minus byteOffset not a multiple of the element size."
+            }
+            length = byteLength / this.BYTES_PER_ELEMENT
+        } else {
+            length = length >>> 0
+            byteLength = length * this.BYTES_PER_ELEMENT
+        }
+
+        if ((byteOffset + byteLength) > source.byteLength) {
+            throw "byteOffset and length reference are an area beyond the end of the buffer."
+        }
+
+        this._buffer = source
+        this._byteLength = byteLength
+        this._byteOffset = byteOffset
+        this._length = length
     }
-    public static fromTypedArray(source: TypedArray): TypedArray {
-        throw "Not yet implemented."
+
+    public fromTypedArray(source: TypedArray): void {
+        let byteLength: number = source.length * this.BYTES_PER_ELEMENT
+        this._buffer = new ArrayBuffer(byteLength)
+        this._byteLength = byteLength
+        this._byteOffset = 0
+        this._length = source.length
+
+        for (let i: number = 0; i < this._length; i++) {
+            this.set(i, source.get(i))
+        }
     }
     
     /**
