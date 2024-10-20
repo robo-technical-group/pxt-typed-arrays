@@ -148,7 +148,7 @@ class TypedArray {
      * Public functions
      */
     public get(index: number): number | undefined {
-        index = index >> 0
+        index = index >>> 0
         if (index >= this._length) {
             return undefined
         }
@@ -167,7 +167,7 @@ class TypedArray {
     }
 
     public set(index: number, value: number): void {
-        index = index >> 0
+        index = index >>> 0
         if (index >= this._length) {
             return
         }
