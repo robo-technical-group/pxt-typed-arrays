@@ -183,6 +183,57 @@ class TypedArray {
         }
     }
 
+    public setFromArray(source: number[], offset: number = 0) {
+        let len: number = source.length >>> 0
+        offset = offset >>> 0
+        if (offset + len > this._length) {
+            throw "Offset plus length of array is out of range."
+        }
+
+        for (let i: number = 0; i < len; i++) {
+            this.set(offset + i, source[i])
+        }
+    }
+
+    public setFromTypedArray(source: TypedArray, offset: number = 0) {
+        offset = offset >>> 0
+        if (offset + source.length > this._length) {
+            throw "Offset plus length of array is out of range."
+        }
+
+        let byteOffset: number = this.byteOffset + offset * this.BYTES_PER_ELEMENT
+        let byteLength: number = source.length * this.BYTES_PER_ELEMENT
+
+        if (source.buffer === this.buffer) {
+            let tmp: number[] = []
+            let i, s: number
+            for (
+                i = 0, s = source.byteOffset;
+                i < byteLength;
+                i++, s++
+            ) {
+                tmp.push(source.buffer.bytes[s])
+            }
+            let d: number
+            for (
+                i = 0, d = byteOffset;
+                i < byteLength;
+                i++, d++
+            ) {
+                this.buffer.bytes[d] = tmp[i]
+            }
+        } else {
+            let i, s, d: number
+            for (
+                i = 0, s = source.byteOffset, d = byteOffset;
+                i < byteLength;
+                i++, s++, d++
+            ) {
+                this.buffer.bytes[d] = source.buffer.bytes[s]
+            }
+        }
+    }
+
     /**
      * Protected functions
      */
