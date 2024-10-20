@@ -36,7 +36,7 @@
 //  * Gradually migrating structure from Khronos spec to ES2015 spec
 
 class Int16Array extends TypedArray {
-    constructor(length: number) {
+    constructor(length: number = 0) {
         super(length)
         this.BYTES_PER_ELEMENT = 2
         this._pack = (value: number) => Convert.packI16(value)
