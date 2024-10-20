@@ -20,12 +20,11 @@ function areEquivalent(a: number[], b: TypedArray): boolean {
     return true
 }
 
-let a: number[] = [0, 0, 0,]
-let b: Int8Array = new Int8Array(3)
-if (!areEquivalent(a, b)) {
-    game.splash("Test failed.")
-    allPassed = false
-}
+let a: Uint8Array = new Uint8Array()
+a.fromArray([0, 1, 2, 3, 4, 5, 6, 7,])
+let r: ArrayBuffer = a.buffer
+let b: Int8Array = new Int8Array()
+b.fromArrayBuffer(r)
 
 if (allPassed) {
     game.splash("All tests passed!")

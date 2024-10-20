@@ -72,7 +72,7 @@ class TypedArray {
     public fromArrayBuffer(
         source: ArrayBuffer,
         byteOffset: number = 0,
-        length: number = undefined
+        length: number = null
     ): void {
         byteOffset = byteOffset >>> 0
         if (byteOffset > source.byteLength) {
@@ -88,7 +88,7 @@ class TypedArray {
         }
 
         let byteLength: number
-        if (length === undefined) {
+        if (length == null) {
             byteLength = source.byteLength - byteOffset
             if (byteLength % this.BYTES_PER_ELEMENT != 0) {
                 throw "Length of buffer minus byteOffset not a multiple of the element size."
