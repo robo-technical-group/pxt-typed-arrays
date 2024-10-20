@@ -20,11 +20,29 @@ function areEquivalent(a: number[], b: TypedArray): boolean {
     return true
 }
 
-let a: Uint8Array = new Uint8Array()
-a.fromArray([0, 1, 2, 3, 4, 5, 6, 7,])
-let r: ArrayBuffer = a.buffer
-let b: Int8Array = new Int8Array()
-b.fromArrayBuffer(r)
+game.splash(`Big endian: ${DataView.IS_BIG_ENDIAN}`)
+
+let d: DataView = new DataView(new ArrayBuffer(8))
+d.setUint32(0, 0x12345678)
+if (d.getUint32(0) != 0x12345678) {
+    game.splash("DataView constructor test 1 failed.")
+    allPassed = false
+}
+d.setUint32(0, 0x12345678, true)
+if (d.getUint32(0, true) != 0x12345678) {
+    game.splash("DataView constructor test 2 failed.")
+    allPassed = false
+}
+d.setUint32(0, 0x12345678, true)
+if (d.getUint32(0) != 0x78563412) {
+    game.splash("DataView constructor test 3 failed.")
+    allPassed = false
+}
+d.setUint32(0, 0x12345678)
+if (d.getUint32(0, true) != 0x78563412) {
+    game.splash("DataView constructor test 4 failed.")
+    allPassed = false
+}
 
 if (allPassed) {
     game.splash("All tests passed!")

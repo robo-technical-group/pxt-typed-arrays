@@ -42,17 +42,17 @@ class DataView {
 
     public constructor(buffer: ArrayBuffer,
         byteOffset: number = 0,
-        byteLength: number = 0
+        byteLength: number = null
     ) {
         byteOffset = byteOffset >>> 0
         if (byteOffset > buffer.byteLength) {
             throw "byteOffset is out of range."
         }
 
-        if (byteLength === undefined) {
+        if (byteLength === undefined || byteLength == null) {
             byteLength = buffer.byteLength - byteOffset
         } else {
-            byteLength = byteLength >> 0
+            byteLength = byteLength >>> 0
         }
 
         if ((byteOffset + byteLength) > buffer.byteLength) {
@@ -76,13 +76,21 @@ class DataView {
         return this._byteOffset
     }
 
+    public static get IS_BIG_ENDIAN(): boolean {
+        let u16: Uint16Array = new Uint16Array()
+        let u8: Uint8Array = new Uint8Array()
+        u16.fromArray([0x1234,])
+        u8.fromArrayBuffer(u16.buffer)
+        return (u8.get(0) === 0x12)
+    }
+
     /**
      * Gets the Float32 value at the specified byte offset from the start of the view. There is
      * no alignment constraint; multi-byte values may be fetched from any offset.
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getFloat32(byteOffset: number, littleEndian?: boolean): number {
+    public getFloat32(byteOffset: number, littleEndian: boolean = false): number {
         throw "Not yet implemented."
     }
 
@@ -92,7 +100,7 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getFloat64(byteOffset: number, littleEndian?: boolean): number {
+    public getFloat64(byteOffset: number, littleEndian: boolean = false): number {
         throw "Not yet implemented."
     }
 
@@ -102,7 +110,8 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      */
     public getInt8(byteOffset: number): number {
-        throw "Not yet implemented."
+        let r: Int8Array = new Int8Array()
+        return this.getter(r, byteOffset)
     }
 
     /**
@@ -111,8 +120,9 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getInt16(byteOffset: number, littleEndian?: boolean): number {
-        throw "Not yet implemented."
+    public getInt16(byteOffset: number, littleEndian: boolean = false): number {
+        let r: Int16Array = new Int16Array()
+        return this.getter(r, byteOffset, littleEndian)
     }
 
     /**
@@ -121,8 +131,9 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getInt32(byteOffset: number, littleEndian?: boolean): number {
-        throw "Not yet implemented."
+    public getInt32(byteOffset: number, littleEndian: boolean = false): number {
+        let r: Int32Array = new Int32Array()
+        return this.getter(r, byteOffset, littleEndian)
     }
 
     /**
@@ -131,7 +142,8 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      */
     public getUint8(byteOffset: number): number {
-        throw "Not yet implemented."
+        let r: Uint8Array = new Uint8Array()
+        return this.getter(r, byteOffset)
     }
 
     /**
@@ -140,8 +152,9 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getUint16(byteOffset: number, littleEndian?: boolean): number {
-        throw "Not yet implemented."
+    public getUint16(byteOffset: number, littleEndian: boolean = false): number {
+        let r: Uint16Array = new Uint16Array()
+        return this.getter(r, byteOffset, littleEndian)
     }
 
     /**
@@ -150,8 +163,9 @@ class DataView {
      * @param byteOffset The place in the buffer at which the value should be retrieved.
      * @param littleEndian If false or undefined, a big-endian value should be read.
      */
-    public getUint32(byteOffset: number, littleEndian?: boolean): number {
-        throw "Not yet implemented."
+    public getUint32(byteOffset: number, littleEndian: boolean = false): number {
+        let r: Uint32Array = new Uint32Array()
+        return this.getter(r, byteOffset, littleEndian)
     }
 
     /**
@@ -160,7 +174,7 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setFloat32(byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setFloat32(byteOffset: number, value: number, littleEndian: boolean = false): void {
         throw "Not yet implemented."
     }
 
@@ -170,7 +184,7 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setFloat64(byteOffset: number, value: number, littleEndian?: boolean): void {
+    public setFloat64(byteOffset: number, value: number, littleEndian: boolean = false): void {
         throw "Not yet implemented."
     }
 
@@ -180,7 +194,8 @@ class DataView {
      * @param value The value to set.
      */
     public setInt8(byteOffset: number, value: number): void {
-        throw "Not yet implemented."
+        let r: Int8Array = new Int8Array()
+        this.setter(r, byteOffset, value)
     }
 
     /**
@@ -189,8 +204,9 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setInt16(byteOffset: number, value: number, littleEndian?: boolean): void {
-        throw "Not yet implemented."
+    public setInt16(byteOffset: number, value: number, littleEndian: boolean = false): void {
+        let r: Int16Array = new Int16Array()
+        this.setter(r, byteOffset, value, littleEndian)
     }
 
     /**
@@ -199,8 +215,9 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setInt32(byteOffset: number, value: number, littleEndian?: boolean): void {
-        throw "Not yet implemented."
+    public setInt32(byteOffset: number, value: number, littleEndian: boolean = false): void {
+        let r: Int32Array = new Int32Array()
+        this.setter(r, byteOffset, value, littleEndian)
     }
 
     /**
@@ -209,7 +226,8 @@ class DataView {
      * @param value The value to set.
      */
     public setUint8(byteOffset: number, value: number): void {
-        throw "Not yet implemented."
+        let r: Uint8Array = new Uint8Array()
+        this.setter(r, byteOffset, value)
     }
 
     /**
@@ -218,8 +236,9 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setUint16(byteOffset: number, value: number, littleEndian?: boolean): void {
-        throw "Not yet implemented."
+    public setUint16(byteOffset: number, value: number, littleEndian: boolean = false): void {
+        let r: Uint16Array = new Uint16Array()
+        this.setter(r, byteOffset, value, littleEndian)
     }
 
     /**
@@ -228,7 +247,67 @@ class DataView {
      * @param value The value to set.
      * @param littleEndian If false or undefined, a big-endian value should be written.
      */
-    public setUint32(byteOffset: number, value: number, littleEndian?: boolean): void {
-        throw "Not yet implemented."
+    public setUint32(byteOffset: number, value: number, littleEndian: boolean = false): void {
+        let r: Uint32Array = new Uint32Array()
+        this.setter(r, byteOffset, value, littleEndian)
+    }
+
+    protected getter(
+        r: TypedArray,
+        byteOffset: number,
+        littleEndian: boolean = false
+    ): number {
+        byteOffset = byteOffset >>> 0
+        if (byteOffset + r.bytesPerElement > this.byteLength) {
+            throw "Array index out of range."
+        }
+
+        byteOffset += this.byteOffset
+
+        let u8 = new Uint8Array()
+        u8.fromArrayBuffer(this.buffer, byteOffset, r.bytesPerElement)
+        let bytes: number[] = []
+        for (let i: number = 0; i < r.bytesPerElement; i++) {
+            bytes.push(u8.get(i))
+        }
+        if (littleEndian == DataView.IS_BIG_ENDIAN) {
+            bytes.reverse()
+        }
+        let r8: Uint8Array = new Uint8Array()
+        r8.fromArray(bytes)
+        r.fromArrayBuffer(r8.buffer)
+        return r.get(0)
+    }
+
+    protected setter(
+        r: TypedArray,
+        byteOffset: number,
+        value: number,
+        littleEndian: boolean = false
+    ): void {
+        byteOffset = byteOffset >>> 0
+        if (byteOffset + r.bytesPerElement > this.byteLength) {
+            throw "Array index out of range."
+        }
+
+        // Get bytes.
+        r.fromArray([value,])
+        let byteArray: Uint8Array = new Uint8Array()
+        byteArray.fromArrayBuffer(r.buffer)
+        let bytes: number[] = []
+        
+        for (let i: number = 0; i < r.bytesPerElement; i++) {
+            bytes.push(byteArray.get(i))
+        }
+
+        // Flip if necessary.
+        if (littleEndian == DataView.IS_BIG_ENDIAN) {
+            bytes.reverse()
+        }
+
+        // Write them.
+        let byteView: Uint8Array = new Uint8Array()
+        byteView.fromArrayBuffer(this.buffer, byteOffset, r.bytesPerElement)
+        byteView.setFromArray(bytes)
     }
 }
