@@ -55,7 +55,7 @@ class TypedArray {
     }
 
     /**
-     * Additional constructors as factory methods.
+     * Additional constructors as methods.
      */
     public fromArray(source: number[]): void {
         let byteLength: number = source.length * this.BYTES_PER_ELEMENT
@@ -134,6 +134,10 @@ class TypedArray {
 
     public get byteOffset(): number {
         return this._byteOffset
+    }
+
+    public get bytesPerElement(): number {
+        return this.BYTES_PER_ELEMENT
     }
 
     public get length(): number {
