@@ -34,6 +34,7 @@
 // Variations:
 //  * Allows typed_array.get/set() as alias for subscripts (typed_array[])
 //  * Gradually migrating structure from Khronos spec to ES2015 spec
+//  * slice() implemention from https://github.com/ttaubert/node-arraybuffer-slice/
 
 class ArrayBuffer {
     protected _byteLength: number
@@ -68,8 +69,37 @@ class ArrayBuffer {
 
     /**
      * Returns a section of an ArrayBuffer.
+     * From https://github.com/ttaubert/node-arraybuffer-slice/
      */
-    public slice(begin: number, end: number = 0): ArrayBuffer {
-        throw "Not yet implemented."
+    public slice(from: number, to: number = null): ArrayBuffer {
+        let length: number = this.byteLength
+        let begin: number = ArrayBuffer.clamp(from, length)
+        let end: number = length
+
+        if (to !== null) {
+            end = ArrayBuffer.clamp(to, length)
+        }
+
+        if (begin > end) {
+            return new ArrayBuffer(0)
+        }
+
+        let num: number = end - begin
+        let target: ArrayBuffer = new ArrayBuffer(num)
+        let targetArray: Uint8Array = new Uint8Array()
+        targetArray.fromArrayBuffer(target)
+        let sourceArray: Uint8Array = new Uint8Array()
+        sourceArray.fromArrayBuffer(this, begin, num)
+        targetArray.setFromTypedArray(sourceArray)
+
+        return target
+    }
+
+    protected static clamp(val: number, length: number): number {
+        val = (val | 0) || 0
+        if (val < 0) {
+            return Math.max(val + length, 0)
+        }
+        return Math.min(val, length)
     }
 }
