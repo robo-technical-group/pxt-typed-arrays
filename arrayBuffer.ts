@@ -35,6 +35,7 @@
 //  * Allows typed_array.get/set() as alias for subscripts (typed_array[])
 //  * Gradually migrating structure from Khronos spec to ES2015 spec
 //  * slice() implemention from https://github.com/ttaubert/node-arraybuffer-slice/
+//  * Base64 conversions from https://github.com/rrhett/typescript-base64-arraybuffer
 
 class ArrayBuffer {
     protected _byteLength: number

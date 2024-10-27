@@ -1,4 +1,5 @@
 Based on code from https://github.com/inexorabletash/polyfill
+and https://github.com/rrhett/typescript-base64-arraybuffer
 
 > Open this page at [https://robo-technical-group.github.io/pxt-typed-arrays/](https://robo-technical-group.github.io/pxt-typed-arrays/)
 
