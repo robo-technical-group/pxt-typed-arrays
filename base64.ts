@@ -127,6 +127,6 @@ namespace Base64 {
     }
 
     export function encodeBufferToStringSet(bytes: ArrayBuffer): string[] {
-        return encodeBuffer(bytes).split('', 80)
+        return encodeBuffer(bytes).split('*', 80)
     }
 }
