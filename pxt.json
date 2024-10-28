@@ -18,7 +18,8 @@
         "int16array.ts",
         "unit16array.ts",
         "int32array.ts",
-        "unit32array.ts"
+        "unit32array.ts",
+        "base64.ts"
     ],
     "testFiles": [
         "test.ts"
