@@ -4,7 +4,21 @@ namespace Base64 {
     const STRING_SET_LENGTH: number = 80
 
     export function decodeBuffer(s: string): Uint8Array {
-        let size: number = s.length
+        return decodeBufferFromStringSet([s,])
+    }
+
+    export function decodeBufferFromStringSet(sa: string[]): Uint8Array {
+        // Make more efficient after testing.
+        // return decodeBuffer(s.join(''))
+        let size: number = 0
+        for (let s of sa) {
+            for (let c of s) {
+                if (ALPHA.indexOf(c) < 0 && c != PADCHAR) {
+                    throw `Invalid string encoding character: ${c}.`
+                }
+            }
+            size += s.length
+        }
 
         if (size === 0) {
             return new Uint8Array(0)
@@ -12,42 +26,47 @@ namespace Base64 {
         if (size % 4 !== 0) {
             throw `Bad string length: ${size}`
         }
-        for (let c of s) {
-            if (ALPHA.indexOf(c) < 0 && c != PADCHAR) {
-                throw `Invalid string encoding character: ${c}.`
-            }
-        }
         /**
          * Every four base64 characters = 24 bits = 3 bytes.
          * But, we also need to figure out padding, if any.
          */
         let bytes: number = 3 * size / 4
         let numPad: number = 0
-        if (s.charAt(size - 1) === '=') {
+        let lastString: string = sa[sa.length - 1]
+        if (lastString.charAt(lastString.length - 1) === '=') {
             numPad++
             bytes--
         }
-        if (s.charAt(size - 2) === '=') {
+        if (lastString.charAt(lastString.length - 2) === '=') {
             numPad++
             bytes--
         }
         const buffer: Uint8Array = new Uint8Array(bytes)
-        let index: number = 0,
+        let count: number = 0,
+            strIndex: number = 0,
+            strLoc: number = 0,
+            currString: string = sa[strIndex],
             bufferIndex: number = 0,
             quantum: number
         if (numPad > 0) {
             size -= 4 // Handle the last one specially.
         }
-        while (index < size) {
+        while (count < size) {
             quantum = 0
             for (let i: number = 0; i < 4; ++i) {
+                while (strLoc >= currString.length) {
+                    strIndex++
+                    currString = sa[strIndex]
+                    strLoc = 0
+                }
                 quantum = (quantum << 6) |
-                    ALPHA.indexOf(s.charAt(index + i))
+                    ALPHA.indexOf(currString.charAt(strLoc))
+                strLoc++
             }
             buffer.set(bufferIndex++, (quantum >> 16) & 0xff)
             buffer.set(bufferIndex++, (quantum >> 8) & 0xff)
             buffer.set(bufferIndex++, quantum & 0xff)
-            index += 4
+            count += 4
         }
         if (numPad > 0) {
             /**
@@ -58,7 +77,7 @@ namespace Base64 {
             quantum = 0
             for (let i: number = 0; i < 4 - numPad; ++i) {
                 quantum = (quantum << 6) |
-                    ALPHA.indexOf(s.charAt(index + i))
+                    ALPHA.indexOf(currString.charAt(strLoc + i))
             }
             if (numPad === 1) {
                 // quantum is 18 bits, but really represents two bytes.
@@ -73,11 +92,6 @@ namespace Base64 {
         }
 
         return buffer
-    }
-
-    export function decodeBufferFromStringSet(s: string[]): Uint8Array {
-        // Make more efficient after testing.
-        return decodeBuffer(s.join(''))
     }
 
     export function encodeBuffer(bytes: ArrayBuffer): string {
