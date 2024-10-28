@@ -1,6 +1,7 @@
 namespace Base64 {
     const PADCHAR: string = '='
     const ALPHA: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+    const STRING_SET_LENGTH: number = 80
 
     export function decodeBuffer(s: string): Uint8Array {
         let size: number = s.length
@@ -80,6 +81,27 @@ namespace Base64 {
     }
 
     export function encodeBuffer(bytes: ArrayBuffer): string {
+        return encode(bytes).join('')
+    }
+
+    export function encodeBufferToStringSet(bytes: ArrayBuffer): string[] {
+        let chars: string[] = encode(bytes)
+        let currString: string = ''
+        let stringSet: string[] = []
+        for (let c of chars) {
+            currString += c
+            if (currString.length >= STRING_SET_LENGTH) {
+                stringSet.push(currString)
+                currString = ''
+            }
+        }
+        if (currString.length > 0) {
+            stringSet.push(currString)
+        }
+        return stringSet
+    }
+
+    function encode(bytes: ArrayBuffer): string[] {
         const array: Uint8Array = new Uint8Array(0)
         array.fromArrayBuffer(bytes)
         const base64: string[] = []
@@ -123,10 +145,7 @@ namespace Base64 {
             base64.push(ALPHA[value])
             base64.push('=')
         }
-        return base64.join('')
-    }
 
-    export function encodeBufferToStringSet(bytes: ArrayBuffer): string[] {
-        return encodeBuffer(bytes).split('*', 80)
+        return base64
     }
 }
