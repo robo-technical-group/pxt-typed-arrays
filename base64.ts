@@ -74,6 +74,11 @@ namespace Base64 {
         return buffer
     }
 
+    export function decodeBufferFromStringSet(s: string[]): Uint8Array {
+        // Make more efficient after testing.
+        return decodeBuffer(s.join(''))
+    }
+
     export function encodeBuffer(bytes: ArrayBuffer): string {
         const array: Uint8Array = new Uint8Array(0)
         array.fromArrayBuffer(bytes)
@@ -119,5 +124,9 @@ namespace Base64 {
             base64.push('=')
         }
         return base64.join('')
+    }
+
+    export function encodeBufferToStringSet(bytes: ArrayBuffer): string[] {
+        return encodeBuffer(bytes).split('', 80)
     }
 }
